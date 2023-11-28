@@ -1,7 +1,7 @@
 const globalstyles = {
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "blue",
   },
 };
 

@@ -1,14 +1,10 @@
+import { View ,StyleSheet} from "react-native";
 import React, { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import { Button, Text, TextInput } from "react-native-paper";
 
 const Login = ({ route, navigation }) => {
   const [showPass, setShowPass] = React.useState(false);
-  const [textShow, settextShow] = useState(true);
 
-  const { signupData } = route.params;
-
-  // State for login form
   const [loginData, setLoginData] = useState({
     Email: '',
     password: '',
@@ -23,22 +19,17 @@ const Login = ({ route, navigation }) => {
 
   const handleLogin = () => {
     try {
-      if (!signupData) {
-        console.log('Signup data is not available. Cannot perform login.');
-        return;
-      }
-
       if (
-        loginData.Email === signupData.Email &&
-        loginData.password === signupData.password
+        loginData.Email === "signupData.Email" &&
+        loginData.password === "signupData.password"
       ) {
         console.log('Login successful');
         navigation.navigate('Home', { loginData: loginData });
       } else {
         console.log('Login failed');
-        alert('Wrong Email or Password!');
+        alert('Wrong Email or Password!')
       }
-
+  
       setLoginData({
         Email: '',
         password: '',
@@ -49,7 +40,8 @@ const Login = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container}
+    >
       <Text style={styles.header}>Login</Text>
 
       {/* email input */}
@@ -74,9 +66,8 @@ const Login = ({ route, navigation }) => {
         value={loginData.password}
         onChangeText={(text) => handleChange('password', text)}
       />
-      
-      {/* Forgot Password link */}
-      <Text
+       {/* Forgot Password link */}
+       <Text
         onPress={() => navigation.navigate('Recover')}
         style={{
           color: 'white',
@@ -86,37 +77,39 @@ const Login = ({ route, navigation }) => {
         Forgot Password
       </Text>
 
-      {/* Login button */}
-      <Button mode="elevated" onPress={handleLogin} style={{ marginTop: 20 }}>
+      <Button
+        mode="elevated"
+        onPress={handleLogin}
+        style={{ marginTop: 20 }}
+      >
         Login
       </Button>
-
-      {/* Register link */}
-      <View
-        style={{
-          marginTop: 10,
-          alignItems: 'center',
-          flexDirection: 'row',
-          justifyContent: 'center',
-        }}>
-        <Text style={{ color: 'white' }}>Don't have an Account? </Text>
+      <View style={{
+        marginTop: 10,
+        alignItems: "center",
+        flexDirection: 'row',
+        justifyContent: 'center',
+      }}>
+        <Text style={{ color: "white" }}>Don't have an Account? </Text>
 
         <Text
-          onPress={() => navigation.navigate('Register')}
+          onPress={() => navigation.navigate("Register")}
           style={{
-            color: 'white',
+            color: "white",
+            alignItems: "center",
             textDecorationLine: 'underline',
           }}>
           Register Here!
         </Text>
       </View>
     </View>
+    
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1, padding: 20, justifyContent: "center", backgroundColor: "#00796b",
     justifyContent: 'center',
     paddingHorizontal: 16,
   },
@@ -124,8 +117,9 @@ const styles = StyleSheet.create({
     fontSize: 35,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: 'white',
+    color: "white"
   },
+
 
   input: {
     height: 40,

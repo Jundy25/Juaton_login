@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 
-const SignupForm = ({ navigation }) => {
+const Recover = ({ navigation }) => {
   const [showPass, setShowPass] = useState(false);
   const [showRePass, setShowRePass] = useState(false);
 
@@ -42,7 +42,7 @@ const SignupForm = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Sign Up</Text>
+      <Text style={styles.header}>Recover Account</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -77,13 +77,13 @@ const SignupForm = ({ navigation }) => {
         onChangeText={(text) => handleChange('confirmPassword', text)}
       />
 
-      <Button icon="account-plus" mode="elevated" onPress={handleSignup} style={{ marginTop: 10 }}>
+      <Button icon="account-plus" mode="contained" onPress={handleSignup} style={{ marginTop: 10 }}>
         Register
       </Button>
       <Button
         onPress={() => navigation.pop()}
         icon="arrow-left"
-        mode="elevated"
+        mode="contained"
         style={{ marginTop: 10 }}
       >
         Go Back
@@ -101,8 +101,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 35,
     fontWeight: 'bold',
-    marginBottom: 16,
-    color: "white"
+    marginBottom: 16
   },
   input: {
     height: 40,
@@ -113,4 +112,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignupForm;
+export default Recover;
