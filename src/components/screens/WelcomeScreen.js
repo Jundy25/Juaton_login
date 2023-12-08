@@ -19,7 +19,7 @@ export default function WelcomeScreen({ navigation }) {
         <Image source={require('./img/DT.png')} style={{width: 350, height: 350}}/>
       
         <Button 
-          onPress={() => navigation.navigate("Login1")}
+          onPress={() => navigation.navigate("Login")}
           mode="elevated"
           style={{ marginTop: 100}}
         >

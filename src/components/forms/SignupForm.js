@@ -1,43 +1,60 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Button, Text, TextInput } from 'react-native-paper';
+import { View,StyleSheet, ToastAndroid } from "react-native";
+import React from "react";
+import { Button, Text, TextInput } from "react-native-paper";
+import fetchServices from "../services/fetchServices";
 
-const SignupForm = ({ navigation }) => {
-  const [showPass, setShowPass] = useState(false);
-  const [showRePass, setShowRePass] = useState(false);
+export default function LoginForm({ navigation }) {
+  const [name, setName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [repassword, setRepassword] = React.useState("");
+  const [showPass, setShowPass] = React.useState(false);
+  const [showRePass, setShowRePass] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [isError, setIsError] = React.useState(false);
 
-  const [formData, setFormData] = useState({
-    Email: '',
-    password: '',
-    confirmPassword: '',
-  });
-
-  const handleChange = (key, value) => {
-    
-    setFormData({
-      ...formData,
-      [key]: value,
-    });
+  const showToast = (message = "Something wen't wrong") => {
+    ToastAndroid.show(message, 3000);
   };
 
-  const handleSignup = () => {
-    // Perform signup logic here, e.g., send data to a server
-    if (
-      formData.Email === "" &&
-      formData.password === "" &&
-      formData.confirmPassword === ""
-    ) {
-      console.log('Sign Up Failed');
-      alert('All fields should not be empty!');
-    } else {
-      // For demonstration purposes, log the form data
-    console.log('Signup Data:', formData);
 
-    // Pass the signup data to the Login screen
-    // Example in your navigator or wherever you navigate to the Login screen
-    navigation.navigate('Login', { signupData: formData, navigation: navigation });
+  const handleRegistration = async () => {
+    try {
+      setLoading(true);
+
+      if (name === "" || email === "" || password === "" || repassword === "") {
+        showToast("Please input required data");
+        setIsError(true);
+        return false;
+      }
+
+      if (password !== repassword) {
+        showToast("Please match the password");
+        setIsError(true);
+        return false;
+      }
+
+      const url = "http://192.168.1.20/api/v1/register";
+      const data = {
+        name,
+        email,
+        password,
+        password_confirmation: repassword,
+      };
+ 
+
+      const result = await fetchServices.postData(url, data);
+      
+      if (result?.message != null) {
+        showToast(result?.message);
+      } else {
+        navigation.navigate("Login");
+      }
+    } catch (e) {  
+      showToast(e.toString());
+    } finally {
+      setLoading(false);
     }
-
   };
 
   return (
@@ -45,9 +62,17 @@ const SignupForm = ({ navigation }) => {
       <Text style={styles.header}>Sign Up</Text>
       <TextInput
         style={styles.input}
+        placeholder="Name"
+        value={name}
+        onChangeText={setName}
+        error={isError}
+      />
+      <TextInput
+        style={styles.input}
         placeholder="Email"
-        value={formData.Email}
-        onChangeText={(text) => handleChange('Email', text)}
+        value={email}
+        onChangeText={setEmail}
+        error={isError}
       />
       <TextInput
         style={styles.input}
@@ -55,12 +80,13 @@ const SignupForm = ({ navigation }) => {
         secureTextEntry={!showPass}
         right={
           <TextInput.Icon
-            icon={showPass ? 'eye' : 'eye-off'}
+            icon={showPass ? "eye" : "eye-off"}
             onPress={() => setShowPass(!showPass)}
           />
         }
-        value={formData.password}
-        onChangeText={(text) => handleChange('password', text)}
+        value={password}
+        onChangeText={setPassword}
+        error={isError}
       />
 
       <TextInput
@@ -69,18 +95,26 @@ const SignupForm = ({ navigation }) => {
         secureTextEntry={!showRePass}
         right={
           <TextInput.Icon
-            icon={showRePass ? 'eye' : 'eye-off'}
+            icon={showPass ? "eye" : "eye-off"}
             onPress={() => setShowRePass(!showRePass)}
           />
         }
-        value={formData.confirmPassword}
-        onChangeText={(text) => handleChange('confirmPassword', text)}
+        value={repassword}
+        onChangeText={setRepassword}
+        error={isError}
       />
 
-      <Button icon="account-plus" mode="elevated" onPress={handleSignup} style={{ marginTop: 10 }}>
+      <Button 
+        disabled={loading}
+        loading={loading}
+        icon="account-plus" 
+        mode="elevated" 
+        onPress={handleRegistration}
+        style={{ marginTop: 10 }}>
         Register
       </Button>
       <Button
+      disabled={loading}
         onPress={() => navigation.pop()}
         icon="arrow-left"
         mode="elevated"
@@ -112,5 +146,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
 });
-
-export default SignupForm;

@@ -1,52 +1,57 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { TextInput, Button } from 'react-native-paper';
+import { View, StyleSheet, ToastAndroid } from "react-native";
+import React from "react";
+import { Button, Text, TextInput, HelperText } from "react-native-paper";
+import { Formik } from "formik";
+import * as Yup from "yup";
+import fetchServices from "../services/fetchServices";
 
-const Login = ({ route, navigation }) => {
+export default function LoginForm({ navigation }) {
   const [showPass, setShowPass] = React.useState(false);
-  const [textShow, settextShow] = useState(true);
 
-  const { signupData } = route.params;
-
-  // State for login form
-  const [loginData, setLoginData] = useState({
-    Email: '',
-    password: '',
-  });
-
-  const handleChange = (key, value) => {
-    setLoginData({
-      ...loginData,
-      [key]: value,
-    });
+  const showToast = (message = "Something wen't wrong") => {
+    ToastAndroid.show(message, 3000);
   };
+  
+  const handleLogin = async (values) => {
+    try { 
+      const url = "http://192.168.1.20/api/v1/login";
+      const result = await fetchServices.postData(url, values);
 
-  const handleLogin = () => {
-    try {
-      if (!signupData) {
-        console.log('Signup data is not available. Cannot perform login.');
-        return;
-      }
-
-      if (
-        loginData.Email === signupData.Email &&
-        loginData.password === signupData.password
-      ) {
-        console.log('Login successful');
-        navigation.navigate('Home', { loginData: loginData });
+      if (result.message != null) {
+        showToast(result?.message);
       } else {
-        console.log('Login failed');
-        alert('Wrong Email or Password!');
+        navigation.navigate("Home");
       }
-
-      setLoginData({
-        Email: '',
-        password: '',
-      });
-    } catch (error) {
-      console.error('Error during login:', error.message);
+    } catch (e) {
+      console.debug(e.toString());
     }
   };
+
+  const validationSchema = Yup.object().shape({
+    email: Yup.string()
+      .email("Invalid Email")
+      .required("Please enter your email"),
+    password: Yup.string().required("Please enter your password"),
+  });
+
+  return (
+    <Formik
+      initialValues={{ email: "", password: "" }}
+      onSubmit={async (values) => {
+        await handleLogin(values);
+      }}
+      validationSchema={validationSchema}
+    >
+      {({
+        values,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        isSubmitting,
+        errors,
+        touched,
+        setTouched,
+      }) => {
 
   return (
     <View style={styles.container}>
@@ -55,25 +60,43 @@ const Login = ({ route, navigation }) => {
       {/* email input */}
       <TextInput
         style={styles.input}
-        label="Email"
-        value={loginData.email}
-        onChangeText={(text) => handleChange('Email', text)}
+        placeholder="Email"
+        defaultValue={values.email}
+        value={values.email}
+        keyboardType="email-address"
+        onChangeText={handleChange("email")}
+        onBlur={handleBlur("email")}
+        error={errors.email && touched.email}
+        onFocus={() => setTouched({ email: true }, false)}
       />
+      {errors.email && touched.email && (
+              <HelperText type="error" visible={errors.email}>
+                {errors.email}
+              </HelperText>
+            )}
 
       {/* Password input */}
       <TextInput
         style={styles.input}
-        label="Password"
+        placeholder="Password"
         secureTextEntry={!showPass}
-        right={
-          <TextInput.Icon
-            icon={showPass ? 'eye' : 'eye-off'}
-            onPress={() => setShowPass(!showPass)}
-          />
-        }
-        value={loginData.password}
-        onChangeText={(text) => handleChange('password', text)}
-      />
+              right={
+                <TextInput.Icon
+                  icon={showPass ? "eye" : "eye-off"}
+                  onPress={() => setShowPass(!showPass)}
+                />
+              }
+              value={values.password}
+              onChangeText={handleChange("password")}
+              onBlur={handleBlur("password")}
+              error={errors.password && touched.password}
+              onFocus={() => setTouched({ password: true }, false)}
+            />
+            {errors.password && touched.password && (
+              <HelperText type="error" visible={errors.password}>
+                {errors.password}
+              </HelperText>
+            )}
       
       {/* Forgot Password link */}
       <Text
@@ -87,7 +110,12 @@ const Login = ({ route, navigation }) => {
       </Text>
 
       {/* Login button */}
-      <Button mode="elevated" onPress={handleLogin} style={{ marginTop: 20 }}>
+      <Button 
+        loading={isSubmitting}
+        disabled={isSubmitting}
+        mode="elevated" 
+        onPress={handleLogin} 
+        style={{ marginTop: 20 }}>
         Login
       </Button>
 
@@ -102,7 +130,7 @@ const Login = ({ route, navigation }) => {
         <Text style={{ color: 'white' }}>Don't have an Account? </Text>
 
         <Text
-          onPress={() => navigation.navigate('Register')}
+          onPress={() => navigation.navigate("Register")}
           style={{
             color: 'white',
             textDecorationLine: 'underline',
@@ -112,7 +140,10 @@ const Login = ({ route, navigation }) => {
       </View>
     </View>
   );
-};
+}}
+</Formik>
+);
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -135,5 +166,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
 });
-
-export default Login;
