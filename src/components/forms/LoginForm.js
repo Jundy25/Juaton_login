@@ -34,6 +34,7 @@ export default function LoginForm({ navigation }) {
     password: Yup.string().required("Please enter your password"),
   });
 
+  
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
@@ -59,16 +60,17 @@ export default function LoginForm({ navigation }) {
 
       {/* email input */}
       <TextInput
-        style={styles.input}
-        placeholder="Email"
-        defaultValue={values.email}
-        value={values.email}
-        keyboardType="email-address"
-        onChangeText={handleChange("email")}
-        onBlur={handleBlur("email")}
-        error={errors.email && touched.email}
-        onFocus={() => setTouched({ email: true }, false)}
-      />
+      style={styles.input}
+      placeholder="Email"
+      defaultValue={values.email}
+      value={values.email}
+      keyboardType="email-address"
+      onChangeText={handleChange("email")}
+      onBlur={handleBlur("email")}
+      error={errors.email && touched.email}
+      onFocus={() => setTouched({ email: true }, false)}
+      />  
+
       {errors.email && touched.email && (
               <HelperText type="error" visible={errors.email}>
                 {errors.email}
@@ -77,26 +79,27 @@ export default function LoginForm({ navigation }) {
 
       {/* Password input */}
       <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry={!showPass}
-              right={
-                <TextInput.Icon
-                  icon={showPass ? "eye" : "eye-off"}
-                  onPress={() => setShowPass(!showPass)}
-                />
-              }
-              value={values.password}
-              onChangeText={handleChange("password")}
-              onBlur={handleBlur("password")}
-              error={errors.password && touched.password}
-              onFocus={() => setTouched({ password: true }, false)}
-            />
-            {errors.password && touched.password && (
-              <HelperText type="error" visible={errors.password}>
-                {errors.password}
-              </HelperText>
-            )}
+      style={styles.input}
+      placeholder="Password"
+      secureTextEntry={!showPass}
+      right={
+        <TextInput.Icon
+          icon={showPass ? "eye" : "eye-off"}
+          onPress={() => setShowPass(!showPass)}
+        />
+      }
+      value={values.password}
+      onChangeText={handleChange("password")}
+      onBlur={handleBlur("password")}
+      error={errors.password && touched.password}
+      onFocus={() => setTouched({ password: true }, false)}
+      />
+      {errors.password && touched.password && (
+                  <HelperText 
+                      type="error" visible={errors.password}>
+                      {errors.password}
+                  </HelperText>
+                      )}
       
       {/* Forgot Password link */}
       <Text
@@ -114,7 +117,7 @@ export default function LoginForm({ navigation }) {
         loading={isSubmitting}
         disabled={isSubmitting}
         mode="elevated" 
-        onPress={handleLogin} 
+        onPress={handleSubmit}
         style={{ marginTop: 20 }}>
         Login
       </Button>
