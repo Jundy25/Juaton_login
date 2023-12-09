@@ -34,7 +34,7 @@ export default function LoginForm({ navigation }) {
         return false;
       }
 
-      const url = "http://192.168.1.20/api/v1/register";
+      const url = "http://192.168.1.13:8000/api/v1/register";
       const data = {
         name,
         email,
